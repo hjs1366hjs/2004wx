@@ -15,4 +15,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::any("/wx","WxController@AccessToken");
+Route::get("/wx","WxController@AccessToken");
