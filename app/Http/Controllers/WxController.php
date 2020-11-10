@@ -10,6 +10,7 @@ class WxController extends Controller
     //
     public function AccessToken()
     {
+        //echo __LINE__;
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
         $nonce = $_GET["nonce"];
@@ -47,7 +48,7 @@ class WxController extends Controller
         if( $tmpStr == $signature ){
             //接收消息
             $xml_str = file_get_contents("php://input");
-            file_put_contents('wx.wvwnt.log',$xml_str);
+            file_put_contents('wx_event.log',$xml_str);
             echo '';
         }else{
             echo "";
