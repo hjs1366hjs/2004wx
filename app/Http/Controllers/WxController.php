@@ -35,6 +35,7 @@ class WxController extends Controller
      */
     public function wxEvent()
    	{
+   	    //echo __METHOD__;
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
         $nonce = $_GET["nonce"];
@@ -48,7 +49,7 @@ class WxController extends Controller
         if( $tmpStr == $signature ){
             //接收消息
             $xml_str = file_get_contents("php://input");
-            file_put_contents('wx_event.log',$xml_str);
+            file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
             echo '';
         }else{
             echo "";
