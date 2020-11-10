@@ -21,8 +21,9 @@ Route::get('/', function () {
 
 Route::any("/wx","WxController@AccessToken"); //接收事件推送
 Route::any("/wx/event","WxController@wxEvent"); //关注回复
-
 Route::any("/wx/token","WxController@getAccessToken");
+Route::get("/wx/menu","WxController@createMenu");
+
 
 Route::get("/test1","WxController@test1");
 Route::post("/test2","WxController@test2");

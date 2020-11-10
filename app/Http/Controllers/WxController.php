@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
+use GuzzleHttp\Client;
 
 class WxController extends Controller
 {
@@ -64,13 +65,12 @@ class WxController extends Controller
         $key = 'weixing:access_token';
         $token = Redis::get($key);
         if($token){
-
-            echo "有缓存";
-            echo'</br>';
+            //echo "有缓存";
+            //echo'</br>';
 
         }else{
 
-            echo '无缓存';
+            //echo '无缓存';
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('APP_ID')."&secret=".env('APP_SECRET')."";
             $resp = file_get_contents($url);
 
@@ -81,7 +81,41 @@ class WxController extends Controller
             Redis::set($key,$token);
             Redis::expire($key,3600);
         }
-        echo "access_token:".$token;
+        return $token;
+    }
+
+    /**
+     *
+     * 创建自定义菜单
+     *
+     */
+    public function createMenu()
+    {
+        $accesstoken = $this->getAccessToken();
+        $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$accesstoken;
+
+        $menu = [
+            'button' => [
+                [
+                    "type" => "click",
+                    "name" => "wx2004",
+                    "key" => "key_wx2004"
+                ],
+
+                [
+                    "type" => "view",
+                    "name" => "BAIDU",
+                    "url"  => "https://www.baidu.com"
+                ],
+            ]
+        ];
+
+        $client = new Client();
+        $request = $client->request('POST', $url, [
+            'body' => json_encode($menu)
+        ]);
+        $data = $request->getBody();
+        echo $data;
     }
 
     //测试1
