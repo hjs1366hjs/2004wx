@@ -8,7 +8,31 @@ use Illuminate\Support\Facades\Redis;
 class WxController extends Controller
 {
     //
-   	public function wxEvent()
+    public function AccessToken()
+    {
+        $signature = $_GET["signature"];
+        $timestamp = $_GET["timestamp"];
+        $nonce = $_GET["nonce"];
+
+        $token = env('WX_TOKEN');
+        $tmpArr = array($token, $timestamp, $nonce);
+        sort($tmpArr, SORT_STRING);
+        $tmpStr = implode( $tmpArr );
+        $tmpStr = sha1( $tmpStr );
+
+        if( $tmpStr == $signature ){
+            echo $_GET('echostr');
+        }else{
+            echo "";
+        }
+    }
+
+    /**
+     *
+     * 关注回复
+     *
+     */
+    public function wxEvent()
    	{
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
@@ -21,7 +45,10 @@ class WxController extends Controller
         $tmpStr = sha1( $tmpStr );
 
         if( $tmpStr == $signature ){
-            echo "";
+            //接收消息
+            $xml_str = file_get_contents("php://input");
+            file_put_contents('wx.wvwnt.log',$xml_str);
+            echo '';
         }else{
             echo "";
         }

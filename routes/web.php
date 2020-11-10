@@ -19,7 +19,9 @@ Route::get('/', function () {
 //    phpinfo();
 //});
 
-Route::get("/wx","WxController@wxEvent"); //接收事件推送
+Route::get("/wx","WxController@AccessToken"); //接收事件推送
+Route::get("/wx/event","WxController@AccessToken"); //关注回复
+
 Route::get("/wx/token","WxController@getAccessToken");
 
 Route::get("/test1","WxController@test1");
