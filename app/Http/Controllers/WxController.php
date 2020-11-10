@@ -50,6 +50,8 @@ class WxController extends Controller
             //接收消息
             $xml_str = file_get_contents("php://input");
             file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
+            //$obj = simplexml_load_string($xml_str);
+
             echo '';
         }else{
             echo "";
