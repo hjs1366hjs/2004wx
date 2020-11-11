@@ -99,14 +99,21 @@ class WxController extends Controller
                 [
                     "type" => "click",
                     "name" => "wx2004",
-                    "key" => "key_wx2004"
+                    "key" => "key_wx2004",
+                    "sub_button"=> [
+                        "type" => "click",
+                        "name" => '天气',
+                        "url" => "https://baidu.com"
+                    ],
                 ],
 
                 [
                     "type" => "view",
                     "name" => "BAIDU",
                     "url"  => "https://www.baidu.com"
+
                 ],
+
             ]
         ];
 
@@ -117,6 +124,13 @@ class WxController extends Controller
         $data = $request->getBody();
         echo $data;
     }
+
+
+    /**
+     *
+     *
+     *
+     */
 
     //测试1
     public function test1()
