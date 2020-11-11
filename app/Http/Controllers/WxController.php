@@ -45,19 +45,19 @@ class WxController extends Controller
         file_put_contents('wx_event.log',FILE_APPEND);
 
         //将接收来的数据转化为对象
-        $obj = simplexml_load_string($xml_str);
-        $this->xml_obj = $obj;
-
-        //推送事件的消息类型
-        $msg_type = $obj->MsgType;
-        switch ($msg_type)
-        {
-            case 'event':
-                if($obj->Event=='subscribe'){
-                    echo $this->subscride();
-                    exit;
-                }
-        }
+//        $obj = simplexml_load_string($xml_str);
+//        $this->xml_obj = $obj;
+//
+//        //推送事件的消息类型
+//        $msg_type = $obj->MsgType;
+//        switch ($msg_type)
+//        {
+//            case 'event':
+//                if($obj->Event=='subscribe'){
+//                    echo $this->subscride();
+//                    exit;
+//                }
+//        }
    	}
 
     /**
