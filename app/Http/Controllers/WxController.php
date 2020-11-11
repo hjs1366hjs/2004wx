@@ -97,14 +97,15 @@ class WxController extends Controller
         $menu = [
             'button' => [
                 [
-                    "type" => "click",
-                    "name" => "wx2004",
-                    "key" => "key_wx2004",
-                    "sub_button"=> [
-                        "type" => "click",
-                        "name" => '天气',
-                        "url" => "https://baidu.com"
-                    ],
+                    "name" => "天气",
+                    "sub_button" => [
+                        [
+                            "type" => "click",
+                            "name" => "xxx",
+                            "key" => "rselfmenu_0_0",
+                            "sub_button" => []
+                        ],
+                        ]
                 ],
 
                 [
