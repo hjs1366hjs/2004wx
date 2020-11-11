@@ -103,14 +103,8 @@ class WxController extends Controller
                         "name" => "天气",
                         "key" => "rselfmenu_0_0"
                     ],
-
-//                [
-//                    "type" => "view",
-//                    "name" => "BAIDU",
-//                    "url"  => "https://www.baidu.com"
-//
-//                ],
-
+                    
+                ]
             ]
         ];
 
