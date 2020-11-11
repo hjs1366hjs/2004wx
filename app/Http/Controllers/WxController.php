@@ -9,6 +9,8 @@ use GuzzleHttp\Client;
 class WxController extends Controller
 {
     //
+    protected $xml_obj;
+
     public function AccessToken()
     {
         //echo __LINE__;
@@ -25,39 +27,51 @@ class WxController extends Controller
         if( $tmpStr == $signature ){
             echo $_GET('echostr');
         }else{
-            echo "";
+            echo "111";
         }
     }
 
     /**
      *
-     * 关注回复
+     * 处理事件推送
      *
      */
     public function wxEvent()
    	{
-   	    //echo __METHOD__;
-        $signature = $_GET["signature"];
-        $timestamp = $_GET["timestamp"];
-        $nonce = $_GET["nonce"];
+   	    //接收数据
+        $xml_str = file_get_contents("php://input");
+        dd($xml_str);
+        //记录日志
+        file_put_contents('wx_event.log',FILE_APPEND);
 
-        $token = env('WX_TOKEN');
-        $tmpArr = array($token, $timestamp, $nonce);
-        sort($tmpArr, SORT_STRING);
-        $tmpStr = implode( $tmpArr );
-        $tmpStr = sha1( $tmpStr );
+        //将接收来的数据转化为对象
+        $obj = simplexml_load_string($xml_str);
+        $this->xml_obj = $obj;
 
-        if( $tmpStr == $signature ){
-            //接收消息
-            $xml_str = file_get_contents("php://input");
-            file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
-            //$obj = simplexml_load_string($xml_str);
-
-            echo '';
-        }else{
-            echo "";
+        //推送事件的消息类型
+        $msg_type = $obj->MsgType;
+        switch ($msg_type)
+        {
+            case 'event':
+                if($obj->Event=='subscribe'){
+                    echo $this->subscride();
+                    exit;
+                }
         }
    	}
+
+    /**
+     * @return mixed
+     *
+     * 回复扫码关注
+     */
+    public function subscride()
+    {
+        echo 111;
+        $content = "欢迎关注";
+        $ToUserName = $this->xml_obj->FromUserName;
+        $FromUserName = $this->xml_obj->ToUserName;
+    }
 
     //获取token
     public function getAccessToken()
@@ -104,6 +118,12 @@ class WxController extends Controller
                         "name" => "天气",
                         "key" => "rselfmenu_0_0"
                     ],
+
+//                    [
+//                        "type" => "click",
+//                        "name" => "商城",
+//                        "url"  => "",
+//                    ]
                 ]
             ]
         ];
