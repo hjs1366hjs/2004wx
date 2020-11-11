@@ -40,7 +40,7 @@ class WxController extends Controller
    	{
    	    //接收数据
         $xml_str = file_get_contents("php://input");
-        dd($xml_str);
+        //dd($xml_str);
         //记录日志
         file_put_contents('wx_event.log',FILE_APPEND);
 

@@ -22,6 +22,7 @@ class VerifyCsrfToken extends Middleware
         //
         "/test2",
         "/wx/event",
-        "/wx/menu"
+        "/wx/menu",
+        "/wx/token"
     ];
 }
