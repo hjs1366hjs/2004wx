@@ -71,7 +71,8 @@ class WxController extends Controller
         }else{
 
             //echo '无缓存';
-            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('APP_ID')."&secret=".env('APP_SECRET')."";
+            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('APP_ID')."&secret=".env('APP_SECRET');
+//            echo $url;die;
             $resp = file_get_contents($url);
 
             $data = json_decode($resp,true);
@@ -109,7 +110,8 @@ class WxController extends Controller
 
         $client = new Client();
         $request = $client->request('POST', $url, [
-            'body' => json_encode($menu)
+            'verify'=>false,
+            'body' => json_encode($menu,JSON_UNESCAPED_UNICODE)
         ]);
         $data = $request->getBody();
         echo $data;
