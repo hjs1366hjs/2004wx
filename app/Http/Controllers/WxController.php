@@ -103,7 +103,6 @@ class WxController extends Controller
                         "name" => "天气",
                         "key" => "rselfmenu_0_0"
                     ],
-                    
                 ]
             ]
         ];
