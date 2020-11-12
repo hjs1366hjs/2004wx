@@ -23,6 +23,7 @@ Route::get('/', function () {
 Route::get("/wx/event","WxController@wxEvent"); //关注回复
 Route::any("/wx/token","WxController@getAccessToken");
 Route::get("/wx/menu","WxController@createMenu");
+Route::get("/wx/atten","WxController@attention");
 Route::get("/wx/subscr","WxController@subscride");
 
 

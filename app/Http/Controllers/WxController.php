@@ -32,6 +32,34 @@ class WxController extends Controller
     }
 
     /**
+     * 关注回复
+     *
+     */
+    public function attention()
+    {
+        //接收数据
+        $xml_str = file_get_contents("php://input");
+
+        //记录日志
+        file_put_contents('wx_event.log',FILE_APPEND);
+
+        //将接收来的数据转化为对象
+        $obj = simplexml_load_string($xml_str);
+        $this->xml_obj = $obj;
+        $msg_type = $obj->MsgType;
+        switch ($msg_type)
+        {
+            case 'event';
+            if($obj->Event == "subscride")
+            {
+                echo $this->subscride();
+                exit;
+            }
+        }
+
+    }
+
+    /**
      *
      * 处理事件推送
      *
@@ -53,29 +81,9 @@ class WxController extends Controller
         }else{
             return false;
         }
-
-
-   	    //接收数据
-//        $xml_str = file_get_contents("php://input");
-//        //dd($xml_str);
-//        //记录日志
-//        file_put_contents('wx_event.log',FILE_APPEND);
-
-        //将接收来的数据转化为对象
-//        $obj = simplexml_load_string($xml_str);
-//        $this->xml_obj = $obj;
-//
-//        //推送事件的消息类型
-//        $msg_type = $obj->MsgType;
-//        switch ($msg_type)
-//        {
-//            case 'event':
-//                if($obj->Event=='subscribe'){
-//                    echo $this->subscride();
-//                    exit;
-//                }
-//        }
    	}
+
+
 
     /**
      * @return mixed
@@ -88,6 +96,7 @@ class WxController extends Controller
         $content = "欢迎关注";
         $ToUserName = $this->xml_obj->FromUserName;
         $FromUserName = $this->xml_obj->ToUserName;
+        $xml = "";
     }
 
     //获取token
