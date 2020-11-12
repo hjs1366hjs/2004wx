@@ -39,42 +39,42 @@ class WxController extends Controller
      */
     public function wxEvent()
    	{
-        $signature = $_GET["signature"];
-        $timestamp = $_GET["timestamp"];
-        $nonce = $_GET["nonce"];
-
-        $token = env('WX_TOKEN');
-        $tmpArr = array($token, $timestamp, $nonce);
-        sort($tmpArr, SORT_STRING);
-        $tmpStr = implode( $tmpArr );
-        $tmpStr = sha1( $tmpStr );
-
-        if( $tmpStr == $signature ){
-            echo $_GET['echostr'];
-        }else{
-            echo "111";
-        }
-        //接收数据
-//        $xml_str = file_get_contents("php://input");
+//        $signature = $_GET["signature"];
+//        $timestamp = $_GET["timestamp"];
+//        $nonce = $_GET["nonce"];
 //
-//        //记录日志
-//        file_put_contents("wx_event.log",$xml_str);
+//        $token = env('WX_TOKEN');
+//        $tmpArr = array($token, $timestamp, $nonce);
+//        sort($tmpArr, SORT_STRING);
+//        $tmpStr = implode( $tmpArr );
+//        $tmpStr = sha1( $tmpStr );
 //
-//        //将接收来的数据转化为对象
-//        $obj = simplexml_load_string($xml_str);
-//        //dd($obj);
-//
-//        $this->xml_obj = $obj;
-//        $msg_type = $obj->MsgType;
-//        switch ($msg_type)
-//        {
-//            case 'event';
-//                if($obj->Event == "subscride")
-//                {
-//                    echo $this->subscride();
-//                    exit;
-//                }
+//        if( $tmpStr == $signature ){
+//            echo $_GET['echostr'];
+//        }else{
+//            echo "111";
 //        }
+        //接收数据
+        $xml_str = file_get_contents("php://input");
+
+        //记录日志
+        file_put_contents("wx_event.log",$xml_str);
+
+        //将接收来的数据转化为对象
+        $obj = simplexml_load_string($xml_str);
+        //dd($obj);
+
+        $this->xml_obj = $obj;
+        $msg_type = $obj->MsgType;
+        switch ($msg_type)
+        {
+            case 'event';
+                if($obj->Event == "subscride")
+                {
+                    echo $this->subscride();
+                    exit;
+                }
+        }
    	}
 
 
