@@ -20,10 +20,10 @@ Route::get('/', function () {
 //});
 
 //Route::any("/wx","WxController@AccessToken"); //接收事件推送
-Route::get("/wx/event","WxController@wxEvent"); //关注回复
+Route::any("/wx/event","WxController@wxEvent"); //关注回复
 Route::get("/wx/token","WxController@getAccessToken");
 Route::get("/wx/menu","WxController@createMenu");
-Route::post("/wx/atten","WxController@attention");
+Route::any("/wx/atten","WxController@attention");
 Route::get("/wx/subscr","WxController@subscride");
 
 
