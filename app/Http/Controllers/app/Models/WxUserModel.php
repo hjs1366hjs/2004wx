@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Models;
+namespace App\Http\Controllers\app\Models;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class UserModel extends Controller
+class WxUserModel extends Controller
 {
     //
 }

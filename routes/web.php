@@ -25,6 +25,7 @@ Route::get("/wx/token","WxController@getAccessToken");
 Route::get("/wx/menu","WxController@createMenu");
 Route::any("/wx/atten","WxController@attention");
 Route::get("/wx/subscr","WxController@subscride");
+Route::get("/wx/userinfo","WxController@getWxUserInfo");
 
 
 

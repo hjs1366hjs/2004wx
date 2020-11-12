@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use GuzzleHttp\Client;
+use App\Model\WxUserModel;
 
 class WxController extends Controller
 {
@@ -62,19 +63,21 @@ class WxController extends Controller
 
         //将接收来的数据转化为对象
         $obj = simplexml_load_string($xml_str);
-        dd($obj);
+        //dd($obj);
+        $this->xml_obj = $obj;
 
-//        $this->xml_obj = $obj;
-//        $msg_type = $obj->MsgType;
-//        switch ($msg_type)
-//        {
-//            case 'event';
-//                if($obj->Event == "subscride")
-//                {
-//                    echo $this->subscride();
-//                    exit;
-//                }
-//        }
+        $msg_type = $obj->MsgType;
+        switch ($msg_type)
+        {
+            case 'event';
+                if($obj->Event == "subscride")
+                {
+                    //扫码关注
+                    echo $this->subscride();
+                    exit;
+                }
+                break;
+        }
    	}
 
 
@@ -86,11 +89,59 @@ class WxController extends Controller
      */
     public function subscride()
     {
-        echo 111;
-        $content = "欢迎关注";
+        //echo 111;
+       //接收值
         $ToUserName = $this->xml_obj->FromUserName;
         $FromUserName = $this->xml_obj->ToUserName;
-        $xml = "";
+        $wxUser = WxUserModel::where(['openid'=>$ToUserName])->first();
+        if($wxUser)
+        {
+            $content = "欢迎回来 :".data("Y-m-d H:i:s");
+        }else{
+            //获取用户信息
+            $user_info = $this->getWxUserInfo();
+
+            //入库
+            unset($user_info['subscribe']);
+            unset($user_info['remark']);
+            unset($user_info['groupid']);
+            unset($user_info['substagid_listcribe']);
+            unset($user_info['qr_scene']);
+            unset($user_info['qr_scene_str']);
+            unset($user_info['tagid_list']);
+
+            WxUserModel::insertGetId($user_info);
+            $content = "欢迎关注";
+        }
+
+        $xml="<xml>
+              <ToUserName><![CDATA[".$ToUserName."]]></ToUserName>
+              <FromUserName><![CDATA[".$FromUserName."]]></FromUserName>
+              <CreateTime>time()</CreateTime>
+              <MsgType><![CDATA[text]]></MsgType>
+              <Content><![CDATA[".$content."]]></Content>
+              </xml>";
+        return $xml;
+    }
+
+    /**
+     * @return mixed
+     *
+     * 获取用户基本信息
+     *
+     */
+    public function getWxUserInfo()
+    {
+        $token = $this->getAccessToken();
+        $openid = $this->xml_obj->FromUserName;
+        $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$token.'openid='.$openid.'&lang=zh_CN";
+
+        //请求接口
+        $client = new Client();
+        $response = $client->request('GET',$url,[
+           'verify' => false,
+        ]);
+        return json_decode($response->getBody(),true);
     }
 
     //获取token
