@@ -62,19 +62,19 @@ class WxController extends Controller
 
         //将接收来的数据转化为对象
         $obj = simplexml_load_string($xml_str);
-        //dd($obj);
+        dd($obj);
 
-        $this->xml_obj = $obj;
-        $msg_type = $obj->MsgType;
-        switch ($msg_type)
-        {
-            case 'event';
-                if($obj->Event == "subscride")
-                {
-                    echo $this->subscride();
-                    exit;
-                }
-        }
+//        $this->xml_obj = $obj;
+//        $msg_type = $obj->MsgType;
+//        switch ($msg_type)
+//        {
+//            case 'event';
+//                if($obj->Event == "subscride")
+//                {
+//                    echo $this->subscride();
+//                    exit;
+//                }
+//        }
    	}
 
 
