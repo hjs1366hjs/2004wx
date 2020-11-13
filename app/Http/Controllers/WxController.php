@@ -55,6 +55,7 @@ class WxController extends Controller
 //        }else{
 //            echo "111";
 //        }
+        //echo 11111;
         //接收数据
         $xml_str = file_get_contents("php://input");
 
@@ -64,19 +65,19 @@ class WxController extends Controller
 
         //将接收来的数据转化为对象
         $obj = simplexml_load_string($xml_str);
-        //dd($obj);
-        //echo $this->xml_obj;die;
+        //print_r($obj);
         $this->xml_obj = $obj;
 
         $msg_type = $obj->MsgType;
         //dd($msg_type);
         switch ($msg_type)
         {
-            case 'event';
+            case 'event':
                 if($obj->Event == "subscride")
                 {
                     //扫码关注
                     echo $this->subscride();
+
                     exit;
                 }
                 break;
