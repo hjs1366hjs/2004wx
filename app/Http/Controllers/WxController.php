@@ -57,16 +57,19 @@ class WxController extends Controller
 //        }
         //接收数据
         $xml_str = file_get_contents("php://input");
-        \
+
         //记录日志
-        file_put_contents("wx_event.log",$xml_str);
+        $log_str = date('Y-m-d H:i:s') . $xml_str ." \n\n";
+        file_put_contents("wx_event.log",$log_str);
 
         //将接收来的数据转化为对象
         $obj = simplexml_load_string($xml_str);
-        print_r($obj);die;
+        //dd($obj);
+        //echo $this->xml_obj;die;
         $this->xml_obj = $obj;
 
         $msg_type = $obj->MsgType;
+        //dd($msg_type);
         switch ($msg_type)
         {
             case 'event';
