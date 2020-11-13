@@ -57,13 +57,13 @@ class WxController extends Controller
 //        }
         //接收数据
         $xml_str = file_get_contents("php://input");
-
+        \
         //记录日志
         file_put_contents("wx_event.log",$xml_str);
 
         //将接收来的数据转化为对象
         $obj = simplexml_load_string($xml_str);
-        //dd($obj);
+        print_r($obj);die;
         $this->xml_obj = $obj;
 
         $msg_type = $obj->MsgType;
@@ -89,8 +89,8 @@ class WxController extends Controller
      */
     public function subscride()
     {
-        //echo 111;
        //接收值
+        //$userinfo = $this->getWxUserInfo();
         $ToUserName = $this->xml_obj->FromUserName;
         $FromUserName = $this->xml_obj->ToUserName;
         $wxUser = WxUserModel::where(['openid'=>$ToUserName])->first();
@@ -133,13 +133,15 @@ class WxController extends Controller
     public function getWxUserInfo()
     {
         $token = $this->getAccessToken();
+        //dd($this->xml_obj);die;
         $openid = $this->xml_obj->FromUserName;
+        //dd($openid);
         $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$token.'openid='.$openid.'&lang=zh_CN";
 
         //请求接口
         $client = new Client();
         $response = $client->request('GET',$url,[
-           'verify' => false,
+           'verify' => false
         ]);
         return json_decode($response->getBody(),true);
     }
