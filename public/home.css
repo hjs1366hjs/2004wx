@@ -1,0 +1,11 @@
+.swiper {
+    border:2px solid red;
+    background-color: #0d6aad;
+    height:250px;
+}
+
+.nav{
+    border:1px solid black;
+    height:20px;
+    margin-top:20px;
+}

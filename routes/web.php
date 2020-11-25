@@ -25,9 +25,11 @@ Route::get("/wx/token","WxController@getAccessToken");
 Route::get("/wx/menu","WxController@createMenu");
 Route::any("/wx/atten","WxController@attention");
 Route::get("/wx/subscr","WxController@subscride");
+
+//小程序
+Route::get("/wx/xcxlog","XcxController@xcxlog");
+Route::get("/wx/xcxgoods","XcxController@xcxgoods");
 //Route::any("/wx/userinfo","WxController@getWxUserInfo");
-
-
 
 Route::get("/test1","WxController@test1");
 Route::post("/test2","WxController@test2");

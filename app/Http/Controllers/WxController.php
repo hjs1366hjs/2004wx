@@ -10,7 +10,7 @@ use App\Model\WxUserModel;
 class WxController extends Controller
 {
     //
-    protected $xml_obj;
+    public $xml_obj;
 
     public function AccessToken()
     {
@@ -40,44 +40,27 @@ class WxController extends Controller
      */
     public function wxEvent()
    	{
-//        $signature = $_GET["signature"];
-//        $timestamp = $_GET["timestamp"];
-//        $nonce = $_GET["nonce"];
-//
-//        $token = env('WX_TOKEN');
-//        $tmpArr = array($token, $timestamp, $nonce);
-//        sort($tmpArr, SORT_STRING);
-//        $tmpStr = implode( $tmpArr );
-//        $tmpStr = sha1( $tmpStr );
-//
-//        if( $tmpStr == $signature ){
-//            echo $_GET['echostr'];
-//        }else{
-//            echo "111";
-//        }
-        //echo 11111;
         //接收数据
         $xml_str = file_get_contents("php://input");
 
         //记录日志
         $log_str = date('Y-m-d H:i:s') . $xml_str ." \n\n";
-        file_put_contents("wx_event.log",$log_str);
+        file_put_contents("wx_event.log",$log_str,FILE_APPEND);
 
         //将接收来的数据转化为对象
-        $obj = simplexml_load_string($xml_str);
+        $obj = simplexml_load_string($xml_str, "SimpleXMLElement",LIBXML_NOCDATA);
         //print_r($obj);
         $this->xml_obj = $obj;
-
+        //print_r($obj);
         $msg_type = $obj->MsgType;
-        //dd($msg_type);
+        //print_r($msg_type);
         switch ($msg_type)
         {
             case 'event':
-                if($obj->Event == "subscride")
+                if($obj->Event == "subscribe")
                 {
                     //扫码关注
-                    echo $this->subscride();
-
+                    echo $this->subscribe();
                     exit;
                 }
                 break;
@@ -91,20 +74,24 @@ class WxController extends Controller
      *
      * 回复扫码关注
      */
-    public function subscride()
+    public function subscribe()
     {
        //接收值
+
         //$userinfo = $this->getWxUserInfo();
         $ToUserName = $this->xml_obj->FromUserName;
+        //print_r($ToUserName);
         $FromUserName = $this->xml_obj->ToUserName;
+        //print_r($FromUserName);
         $wxUser = WxUserModel::where(['openid'=>$ToUserName])->first();
+        //dd($wxUser);
         if($wxUser)
         {
             $content = "欢迎回来 :".data("Y-m-d H:i:s");
         }else{
             //获取用户信息
             $user_info = $this->getWxUserInfo();
-
+            //dd($user_info);
             //入库
             unset($user_info['subscribe']);
             unset($user_info['remark']);
@@ -113,9 +100,11 @@ class WxController extends Controller
             unset($user_info['qr_scene']);
             unset($user_info['qr_scene_str']);
             unset($user_info['tagid_list']);
+            unset($user_info['errcode']);
+            unset($user_info['errmsg']);
 
             WxUserModel::insertGetId($user_info);
-            $content = "欢迎关注";
+            $content = "欢迎关注 : ".date("Y-m-d H:i:s");
         }
 
         $xml="<xml>
@@ -137,43 +126,46 @@ class WxController extends Controller
     public function getWxUserInfo()
     {
         $token = $this->getAccessToken();
-        //dd($this->xml_obj);die;
+        //dd($token);
         $openid = $this->xml_obj->FromUserName;
-        //dd($openid);
+        //print_r($openid);
         $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$token.'openid='.$openid.'&lang=zh_CN";
 
         //请求接口
-        $client = new Client();
-        $response = $client->request('GET',$url,[
-           'verify' => false
-        ]);
-        return json_decode($response->getBody(),true);
+        $resp = file_get_contents($url);
+        dd($resp);
+//        $client = new Client();
+//        $response = $client->request('GET',$url,[
+//           'verify' => false
+//        ]);
+        //dd($token);
+        //dd(json_decode($response->getBody(),true)) ;
     }
 
     //获取token
     public function getAccessToken()
     {
-        $key = 'weixing:access_token';
+        $key = 'weixin:access_token';
         $token = Redis::get($key);
+        //print_r($token);
         if($token){
             //echo "有缓存";
-            //echo'</br>';
-
+            return $token;
         }else{
-
-            //echo '无缓存';
+            //echo "无缓存";
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('APP_ID')."&secret=".env('APP_SECRET');
 //            echo $url;die;
-            $resp = file_get_contents($url);
-
-            $data = json_decode($resp,true);
+            $client = new Client();
+            $response = $client->request('GET',$url,['verify'=>false]);
+            $json_str = $response->getBody();
+            $data = json_decode($json_str,true);
             $token = $data['access_token'];
             //dd($token);
             //token保存到redis中 设置过期时间为3600
             Redis::set($key,$token);
             Redis::expire($key,3600);
+            return $token;
         }
-        return $token;
     }
 
     /**
