@@ -40,30 +40,20 @@ class WxController extends Controller
      */
     public function wxEvent()
    	{
-        //接收数据
-        $xml_str = file_get_contents("php://input");
+        $signature = $_GET["signature"];
+        $timestamp = $_GET["timestamp"];
+        $nonce = $_GET["nonce"];
 
-        //记录日志
-        $log_str = date('Y-m-d H:i:s') . $xml_str ." \n\n";
-        file_put_contents("wx_event.log",$log_str,FILE_APPEND);
+        $token = env('WX_TOKEN');
+        $tmpArr = array($token, $timestamp, $nonce);
+        sort($tmpArr, SORT_STRING);
+        $tmpStr = implode( $tmpArr );
+        $tmpStr = sha1( $tmpStr );
 
-        //将接收来的数据转化为对象
-        $obj = simplexml_load_string($xml_str, "SimpleXMLElement",LIBXML_NOCDATA);
-        //print_r($obj);
-        $this->xml_obj = $obj;
-        //print_r($obj);
-        $msg_type = $obj->MsgType;
-        //print_r($msg_type);
-        switch ($msg_type)
-        {
-            case 'event':
-                if($obj->Event == "subscribe")
-                {
-                    //扫码关注
-                    echo $this->subscribe();
-                    exit;
-                }
-                break;
+        if( $tmpStr == $signature ){
+            echo $_GET('echostr');
+        }else{
+            return false;
         }
    	}
 
@@ -78,43 +68,43 @@ class WxController extends Controller
     {
        //接收值
 
-        //$userinfo = $this->getWxUserInfo();
-        $ToUserName = $this->xml_obj->FromUserName;
-        //print_r($ToUserName);
-        $FromUserName = $this->xml_obj->ToUserName;
-        //print_r($FromUserName);
-        $wxUser = WxUserModel::where(['openid'=>$ToUserName])->first();
-        //dd($wxUser);
-        if($wxUser)
-        {
-            $content = "欢迎回来 :".data("Y-m-d H:i:s");
-        }else{
-            //获取用户信息
-            $user_info = $this->getWxUserInfo();
-            //dd($user_info);
-            //入库
-            unset($user_info['subscribe']);
-            unset($user_info['remark']);
-            unset($user_info['groupid']);
-            unset($user_info['substagid_listcribe']);
-            unset($user_info['qr_scene']);
-            unset($user_info['qr_scene_str']);
-            unset($user_info['tagid_list']);
-            unset($user_info['errcode']);
-            unset($user_info['errmsg']);
-
-            WxUserModel::insertGetId($user_info);
-            $content = "欢迎关注 : ".date("Y-m-d H:i:s");
-        }
-
-        $xml="<xml>
-              <ToUserName><![CDATA[".$ToUserName."]]></ToUserName>
-              <FromUserName><![CDATA[".$FromUserName."]]></FromUserName>
-              <CreateTime>time()</CreateTime>
-              <MsgType><![CDATA[text]]></MsgType>
-              <Content><![CDATA[".$content."]]></Content>
-              </xml>";
-        return $xml;
+//        //$userinfo = $this->getWxUserInfo();
+//        $ToUserName = $this->xml_obj->FromUserName;
+//        //print_r($ToUserName);
+//        $FromUserName = $this->xml_obj->ToUserName;
+//        //print_r($FromUserName);
+//        $wxUser = WxUserModel::where(['openid'=>$ToUserName])->first();
+//        //dd($wxUser);
+//        if($wxUser)
+//        {
+//            $content = "欢迎回来 :".data("Y-m-d H:i:s");
+//        }else{
+//            //获取用户信息
+//            $user_info = $this->getWxUserInfo();
+//            //dd($user_info);
+//            //入库
+//            unset($user_info['subscribe']);
+//            unset($user_info['remark']);
+//            unset($user_info['groupid']);
+//            unset($user_info['substagid_listcribe']);
+//            unset($user_info['qr_scene']);
+//            unset($user_info['qr_scene_str']);
+//            unset($user_info['tagid_list']);
+//            unset($user_info['errcode']);
+//            unset($user_info['errmsg']);
+//
+//            WxUserModel::insertGetId($user_info);
+//            $content = "欢迎关注 : ".date("Y-m-d H:i:s");
+//        }
+//
+//        $xml="<xml>
+//              <ToUserName><![CDATA[".$ToUserName."]]></ToUserName>
+//              <FromUserName><![CDATA[".$FromUserName."]]></FromUserName>
+//              <CreateTime>time()</CreateTime>
+//              <MsgType><![CDATA[text]]></MsgType>
+//              <Content><![CDATA[".$content."]]></Content>
+//              </xml>";
+//        return $xml;
     }
 
     /**

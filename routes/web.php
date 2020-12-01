@@ -29,6 +29,8 @@ Route::get("/wx/subscr","WxController@subscride");
 //小程序
 Route::get("/wx/xcxlog","XcxController@xcxlog");
 Route::get("/wx/xcxgoods","XcxController@xcxgoods");
+Route::get("/wx/detail","XcxController@xcxdetail");
+Route::get("/wx/cart","XcxController@xcxcart");
 //Route::any("/wx/userinfo","WxController@getWxUserInfo");
 
 Route::get("/test1","WxController@test1");
