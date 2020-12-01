@@ -51,9 +51,9 @@ class WxController extends Controller
         $tmpStr = sha1( $tmpStr );
 
         if( $tmpStr == $signature ){
-            echo $_GET('echostr');
+            echo $_GET['echostr'];
         }else{
-            return false;
+            echo '11111';
         }
    	}
 
