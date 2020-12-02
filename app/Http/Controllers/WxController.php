@@ -53,7 +53,7 @@ class WxController extends Controller
         if( $tmpStr == $signature ){
             echo $_GET['echostr'];
         }else{
-            echo '11111';
+            echo 11111;
         }
    	}
 
@@ -68,43 +68,43 @@ class WxController extends Controller
     {
        //接收值
 
-//        //$userinfo = $this->getWxUserInfo();
-//        $ToUserName = $this->xml_obj->FromUserName;
-//        //print_r($ToUserName);
-//        $FromUserName = $this->xml_obj->ToUserName;
-//        //print_r($FromUserName);
-//        $wxUser = WxUserModel::where(['openid'=>$ToUserName])->first();
-//        //dd($wxUser);
-//        if($wxUser)
-//        {
-//            $content = "欢迎回来 :".data("Y-m-d H:i:s");
-//        }else{
-//            //获取用户信息
-//            $user_info = $this->getWxUserInfo();
-//            //dd($user_info);
-//            //入库
-//            unset($user_info['subscribe']);
-//            unset($user_info['remark']);
-//            unset($user_info['groupid']);
-//            unset($user_info['substagid_listcribe']);
-//            unset($user_info['qr_scene']);
-//            unset($user_info['qr_scene_str']);
-//            unset($user_info['tagid_list']);
-//            unset($user_info['errcode']);
-//            unset($user_info['errmsg']);
-//
-//            WxUserModel::insertGetId($user_info);
-//            $content = "欢迎关注 : ".date("Y-m-d H:i:s");
-//        }
-//
-//        $xml="<xml>
-//              <ToUserName><![CDATA[".$ToUserName."]]></ToUserName>
-//              <FromUserName><![CDATA[".$FromUserName."]]></FromUserName>
-//              <CreateTime>time()</CreateTime>
-//              <MsgType><![CDATA[text]]></MsgType>
-//              <Content><![CDATA[".$content."]]></Content>
-//              </xml>";
-//        return $xml;
+        //$userinfo = $this->getWxUserInfo();
+        $ToUserName = $this->xml_obj->FromUserName;
+        //print_r($ToUserName);
+        $FromUserName = $this->xml_obj->ToUserName;
+        //print_r($FromUserName);
+        $wxUser = WxUserModel::where(['openid'=>$ToUserName])->first();
+        //dd($wxUser);
+        if($wxUser)
+        {
+            $content = "欢迎回来 :".data("Y-m-d H:i:s");
+        }else{
+            //获取用户信息
+            $user_info = $this->getWxUserInfo();
+            //dd($user_info);
+            //入库
+            unset($user_info['subscribe']);
+            unset($user_info['remark']);
+            unset($user_info['groupid']);
+            unset($user_info['substagid_listcribe']);
+            unset($user_info['qr_scene']);
+            unset($user_info['qr_scene_str']);
+            unset($user_info['tagid_list']);
+            unset($user_info['errcode']);
+            unset($user_info['errmsg']);
+
+            WxUserModel::insertGetId($user_info);
+            $content = "欢迎关注 : ".date("Y-m-d H:i:s");
+        }
+
+        $xml="<xml>
+              <ToUserName><![CDATA[".$ToUserName."]]></ToUserName>
+              <FromUserName><![CDATA[".$FromUserName."]]></FromUserName>
+              <CreateTime>time()</CreateTime>
+              <MsgType><![CDATA[text]]></MsgType>
+              <Content><![CDATA[".$content."]]></Content>
+              </xml>";
+        return $xml;
     }
 
     /**
@@ -178,11 +178,11 @@ class WxController extends Controller
                         "key" => "rselfmenu_0_0"
                     ],
 
-//                    [
-//                        "type" => "click",
-//                        "name" => "商城",
-//                        "url"  => "",
-//                    ]
+                    [
+                        "type" => "click",
+                        "name" => "查询历史",
+                        "url"  => "",
+                    ]
                 ]
             ]
         ];
