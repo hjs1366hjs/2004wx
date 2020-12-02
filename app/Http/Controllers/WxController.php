@@ -40,24 +40,61 @@ class WxController extends Controller
      */
     public function wxEvent()
    	{
-        $signature = $_GET["signature"];
-        $timestamp = $_GET["timestamp"];
-        $nonce = $_GET["nonce"];
+//        $signature = $_GET["signature"];
+//        $timestamp = $_GET["timestamp"];
+//        $nonce = $_GET["nonce"];
+//
+//        $token = env('WX_TOKEN');
+//        $tmpArr = array($token, $timestamp, $nonce);
+//        sort($tmpArr, SORT_STRING);
+//        $tmpStr = implode( $tmpArr );
+//        $tmpStr = sha1( $tmpStr );
+//
+//        if( $tmpStr == $signature ){
+//            echo $_GET['echostr'];
+//        }else{
+//            echo 11111;
+//        }
 
-        $token = env('WX_TOKEN');
-        $tmpArr = array($token, $timestamp, $nonce);
-        sort($tmpArr, SORT_STRING);
-        $tmpStr = implode( $tmpArr );
-        $tmpStr = sha1( $tmpStr );
+        //接受数据
+        $xml_str = file_get_contents("php://input");
+        $log_str = data('Y-m-d H:i:s').$xml_str;
+        file_put_contents('wx_event.log',$log_str,FILE_APPEND);
 
-        if( $tmpStr == $signature ){
-            echo $_GET['echostr'];
-        }else{
-            echo 11111;
+        //接受的数据转为对象
+        $obj = simplexml_load_string($xml_str);
+        $this->xml_obj = $obj;
+
+        $msg_type = $this->MsgType;
+        switch($msg_type)
+        {
+            case 'event' :
+
+                if($obj->Event=='subscribe')        // subscribe 扫码关注
+                {
+                    echo $this->subscribe();
+                    exit;
+                }
+                break;
+
+            case 'text' :           //处理文本信息
+                $this->textHandler();
+                break;
+
+            default:
+                echo 'default';
         }
-   	}
+
+        echo "";
+
+    }
 
 
+
+    public function textHandler()
+    {
+
+    }
 
     /**
      * @return mixed
